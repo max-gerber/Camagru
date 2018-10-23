@@ -9,8 +9,8 @@ $username = "";
 $email = "";
 $errors = array();
 try{
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     if (isset($_POST['register'])){
         $username = $_POST['username'];
         $email = $_POST['email'];
@@ -25,10 +25,13 @@ try{
         if(empty($password)){
             array_push($errors, "Password is required");
         }
+        if (strlen($password) < 5){
+            array_push($errors, "Passwords must by of 6 characters or more");
+        }
         if($password != $confirm){
             array_push($errors, "Ther two passwords do not match");
         }
-        $stmt = $conn->prepare("SELECT * FROM camagru_db.users WHERE username = :usr OR email = :eml");
+        $stmt = $connection->prepare("SELECT * FROM camagru_db.users WHERE username = :usr OR email = :eml");
         $stmt->execute(["usr"=>$username, "eml"=>$email]);
         $results = $stmt->fetchAll();
         if (sizeof($results) >= 1){
@@ -37,12 +40,16 @@ try{
         if(count($errors) == 0){
             $password = hash('whirlpool', $password);
             console.log($password) ;
-            $sql = "INSERT INTO camagru_db.users (username, email, `password`) 
-                VALUES ('$username','$email', '$password')";
-            $conn->exec($sql);
+            $token = hash('whirlpool', $username."crap".$email);
+            $sql = "INSERT INTO camagru_db.users (username, email, `password`, token) 
+                VALUES ('$username','$email', '$password', '$token')";
+            $connection->exec($sql);
             $_SESSION['username'] = $username;
             $_SESSION['success'] = "You are logged in";
-            header('location: camera.html');
+            $message = 'Hello '.$username.', here is the activation link http://127.0.0.1:8080/Camargru/validate.php?token='.$token;
+            $message = wordwrap($message, 70);
+            mail($email, 'Camagru Registration', $message);
+            header('location: login.php');
         }
     }
 }
@@ -65,9 +72,9 @@ if (isset($_POST['login'])){
     }
     if(count($errors) == 0){
         
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password, $opt);
+        $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password, $opt);
         $password = hash('whirlpool', $password);
-        $stmt = $conn->prepare("SELECT * FROM camagru_db.users WHERE username = :usr AND password = :psw");
+        $stmt = $connection->prepare("SELECT * FROM camagru_db.users WHERE username = :usr AND password = :psw");
         $stmt->execute(["usr"=>$username, "psw"=>$password]);
         $results = $stmt->fetchAll();
         if (sizeof($results) == 1){
