@@ -1,4 +1,3 @@
-<?php include(server.php); ?>
 <!doctype html>
 <html>
 <head>
@@ -9,7 +8,6 @@
     <div class="header">
         <h2>LOG IN</h2>
     </div>
-
     <form method="post" action="login.php">
         <?php include('errors.php');?>
         <div class="input-group">
@@ -26,7 +24,9 @@
         <p>
             Don't have an account? <a href="register.php">Sign up</a>
         </p>
+        <p>
+            Forgoten your password? <a href="reset-password.php">Reset password</a>
+        </p>
     </form>
-
 </body>
 </html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head>
+        <title>CAMAGRU</title>
+        <link rel="stylesheet" href="style.css">        
+    </head>
+    <body>
+        <?php include('server.php');?>
+        <div class="main-header">
+            <h2>HOME PAGE</h2>
+            <button onclick="logout();" style="float: right;">logout</button><br>
+            <button onclick="camera();" style="float: right;">camera</button><br>
+            <?php if (isset($_SESSION['username'])){ echo "Hello ".$_SESSION['username']."!";} else { header('location: login.php');}?>
+        </div>
+        <script>
+        function logout(){
+            location.replace("logout.php?logout=1");
+        }
+        function camera(){
+            location.replace("camera.php");
+        }
+        </script>
+    </body>
+</html>

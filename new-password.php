@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
 <head>
-<title>User Registration Page</title>
+<title>Create New Password</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
     <div class="header">
-        <h2>REGISTER</h2>
+        <h2>CREATE NEW PASSWORD</h2>
     </div>
-    <form method="post" action="register.php">
+    <form method="post" action="new-password.php">
         <?php include('errors.php');?>
         <div class="input-group">
             <label>Username</label>
@@ -19,19 +19,20 @@
             <input type="text" name="email">
         </div>
         <div class="input-group">
-            <label>Password</label>
+            <label>New Password</label>
             <input type="password" name="password">
         </div>
         <div class="input-group">
-            <label>Confirm Password</label>
+            <label>Confirm new password</label>
             <input type="password" name="confirm">
         </div>
         <div class="input-group">
-            <button type="submit" name="register" class="button">Register</button>
+            <label>Token</label>
+            <input type="text" name="reset-token">
         </div>
-        <p>
-            Have an account? <a href="login.php">Log in</a>
-        </p>
+        <div class="input-group">
+            <button type="submit" name="new" class="button">reset</button>
+        </div>
     </form>
 </body>
 </html>
