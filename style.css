@@ -84,6 +84,9 @@ form{
     border: 10px solid darkgrey;
     margin: 0 auto;
 }
+.overlay{
+    position: absolute;
+}
 .frame-capture-button{
     display: block;
     margin: 10px 0;

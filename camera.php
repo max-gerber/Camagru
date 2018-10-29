@@ -13,7 +13,14 @@
             <?php echo "You look amazing!";?>
         </div>
         <div class="frame">
-            <video id ="video" width="400" height="300"></video>
+            <img id="live" class="overlay" width="400" height="300">
+            <video id ="video" width="400" height="300"></video><br>
+            <div>
+                <a href="#" id="sticker1" class="button">Rainbow filter</a>
+                <a href="#" id="sticker2" class="button">Mood filter</a>
+                <a href="#" id="sticker3" class="button">Gothic filter</a>
+                <a href="#" id="sticker4" class="button">Hipster filter</a>
+            </div>
             <a href="#" id="capture" class="frame-capture-button">
                 <?php
                     if (isset($_SESSION['username'])){
@@ -25,7 +32,8 @@
                 ?>
             </a>
             <canvas id ="canvas" width="400" height="300"></canvas>
-            <img id="photo" src="image/your_photo_here.png" width="400" height="300" alt="Image">
+            <img id="photo" src="images/your_photo_here.png" width="400" height="300" alt="Image" download="file.png">
+            <a href="#" id="download" class="frame-capture-button" download="my-file-name.png">Save</a>
         </div>
         <script src="photo.js"></script>
         <script>
