@@ -8,7 +8,9 @@ $tablename = "users";
 $username = "";
 $email = "";
 $errors = array();
-// 
+
+//  Registering
+
 try{
     $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
     $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -32,6 +34,15 @@ try{
         if (strlen($password) < 6){
             array_push($errors, "Passwords must by of 6 characters or more");
         }
+        if (!preg_match( '/[A-Z]/', $password)){
+            array_push($errors, "Passwords must contain at least one uppercase letter");
+        }
+        if (!preg_match( '/[a-z]/', $password)){
+            array_push($errors, "Passwords must contain at least one lowercase letter");
+        }
+        if (!preg_match( '/[0-9]/', $password)){
+            array_push($errors, "Passwords must contain at least one number");
+        }
         if($password != $confirm){
             array_push($errors, "The two passwords do not match");
         }
@@ -45,9 +56,8 @@ try{
             $password = hash('whirlpool', $password);
             console.log($password) ;
             $token = hash('whirlpool', "crap".$password);
-            $sql = "INSERT INTO camagru_db.users (username, email, `password`, token) 
-                VALUES ('$username','$email', '$password', '$token')";
-            $connection->exec($sql);
+            $stmt = $connection->prepare("INSERT INTO camagru_db.users (username, email, `password`, token) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$username,$email, $password, $token]);
             $message = 'Hello '.$username.', here is the activation link http://127.0.0.1:8080/Camagru/validate.php?token='.$token;
             $message = wordwrap($message, 70);
             mail($email, 'Camagru Registration', $message);
@@ -58,10 +68,16 @@ try{
 catch(PDOException $e){
     echo $sql . "<br>" . $e->getMessage();
 }
+
+//  Logging out
+
 if (isset($_GET['logout'])){
     session_destroy();
     unset($_SESSION['username']);
 }
+
+//  Sending password reset email
+
 if (isset($_POST['reset'])){
     $username = ($_POST['username']);
     $email = ($_POST['email']);
@@ -78,9 +94,9 @@ if (isset($_POST['reset'])){
         $results = $stmt->fetchAll();
         if (sizeof($results) == 1){
             $token = hash('whirlpool', $username."crap".$email);
-            $query = $connection->prepare("UPDATE camagru_db.users SET token=:t0ken WHERE username=:us3r");
-            $query->execute(["t0ken" => $token, "us3r" => $username]);
-            $message = 'follow this link http://127.0.0.1:8080/Camagru/new-password.php and paste this into the "token" field '.$token;
+            $stmt = $connection->prepare("UPDATE camagru_db.users SET token=:t0ken WHERE username=:us3r");
+            $stmt->execute(["t0ken" => $token, "us3r" => $username]);
+            $message = 'follow this link http://127.0.0.1:8080/Camagru/new-password.php?token='.$token.' to reset yourt password';
             $message = wordwrap($message, 70);
             mail($email, 'Password reset', $message);
             header('location: login.php');
@@ -90,6 +106,9 @@ if (isset($_POST['reset'])){
         }
     }
 }
+
+//  Logging in
+
 if (isset($_POST['login'])){
     $username = ($_POST['username']);
     $password = ($_POST['password']);
@@ -123,31 +142,38 @@ if (isset($_POST['login'])){
         }
     }
 }
-// 33b5c5a389b7a7f041a86e99fe5025c6909e86afae5e02f7997586a6bde9c285d4356ff61d59bb1172f367dcb9813e9082a22a70c3751b1bb7e28ba9bac8225a
-// 33b5c5a389b7a7f041a86e99fe5025c6909e86afae5e02f7997586a6bde9c285d4356ff61d59bb1172f367dcb9813e9082a22a70c3751b1bb7e28ba9bac8225a
+
+//  Verifying user
+
 if (isset($_GET['token'])){
     $token = $_GET['token'];
     $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
     $query = $connection->prepare("UPDATE camagru_db.users SET verified=1 WHERE token=:T0KEN");
     $query->execute(["T0KEN" => $token]);
 }
+
+//  Reseting password
+
 if (isset($_POST['new'])){
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
     $confirm = $_POST['confirm'];
-    $token = $_POST['reset-token'];
-    if (empty($username)){
-        array_push($errors, "Username is required");
-    }
-    if (empty($email)){
-        array_push($errors, "Email is required");
-    }
+    $token = $_SESSION['token'];
     if (empty($password)){
         array_push($errors, "Password is required");
     }
     if (strlen($password) < 6){
         array_push($errors, "Passwords must by of 6 characters or more");
+    }
+    if (!preg_match( '/[A-Z]/', $password)){
+        array_push($errors, "Passwords must contain at least one uppercase letter");
+    }
+    if (!preg_match( '/[a-z]/', $password)){
+        array_push($errors, "Passwords must contain at least one lowercase letter");
+    }
+    if (!preg_match( '/[0-9]/', $password)){
+        array_push($errors, "Passwords must contain at least one number");
     }
     if($password != $confirm){
         array_push($errors, "The two passwords do not match");
@@ -158,18 +184,31 @@ if (isset($_POST['new'])){
     if(count($errors) == 0){
         $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
         $password = hash('whirlpool', $password);
-        $stmt = $connection->prepare("SELECT * FROM camagru_db.users WHERE username = :us3r AND email = :ema1l AND token = :t0ken");
-        $stmt->execute(["us3r"=>$username, "ema1l"=>$email, "t0ken"=>$token]);
+        $stmt = $connection->prepare("SELECT * FROM camagru_db.users WHERE token = :t0ken");
+        $stmt->execute(["t0ken"=>$token]);
         $results = $stmt->fetchAll();
         if (sizeof($results) == 1){
-            $query = $connection->prepare("UPDATE camagru_db.users SET password=:p4ssw0rd WHERE username=:us3r");
-            $query->execute(["p4ssw0rd" => $password, "us3r" => $username]);
+            $query = $connection->prepare("UPDATE camagru_db.users SET password=:p4ssw0rd WHERE token = :t0ken");
+            $query->execute(["p4ssw0rd" => $password, "t0ken"=>$token]);
             header('location: login.php');
         }
         else{
-            array_push($errors, "This Username/Email/Token is incorrect");
+            array_push($errors, "There was an error, please try again");
         }
 
     }
+}
+
+//  add photo to database
+
+if(isset($_POST['submit_picture'])){
+    $picture = $_POST['picture'];
+    $username = $_SESSION['username'];
+    echo ($username."   ".$picture);
+    $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+    $stmt = $connection->prepare("INSERT INTO camagru_db.photos (photo, user) VALUES (:p1ctur3, :us3r)");
+    $stmt->execute(["p1ctur3"=>$picture ,"us3r"=>$username]);
+    // $stmt = $connection->prepare("INSERT INTO camagru_db.users (username, email, `password`, token) VALUES (?, ?, ?, ?)");
+    // $stmt->execute([$username,$email, $password, $token]);
 }
 ?>

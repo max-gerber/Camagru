@@ -32,7 +32,7 @@
         $connection = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = "CREATE TABLE photos(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
-        photo VARCHAR(255) NOT NULL,
+        photo LONGTEXT(4294967295) NOT NULL,
         user VARCHAR(255) NOT NULL,
         creation TIMESTAMP)";
         $connection->exec($sql);

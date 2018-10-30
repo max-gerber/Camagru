@@ -8,9 +8,25 @@
         <?php include('server.php');?>
         <div class="main-header">
             <h2>HOME PAGE</h2>
-            <button onclick="logout();" style="float: right;">logout</button><br>
+            <button onclick="logout();" style="float: right;">
+            <?php
+                if (isset($_SESSION['username'])){
+                    echo "logout";
+                }
+                else{
+                    echo "login";
+                }
+                ?>
+                </button><br>
             <button onclick="camera();" style="float: right;">camera</button><br>
-            <?php if (isset($_SESSION['username'])){ echo "Hello ".$_SESSION['username']."!";} else { header('location: login.php');}?>
+            <?php
+                if (isset($_SESSION['username'])){
+                    echo "Hello ".$_SESSION['username']."!";
+                }
+                else{
+                    echo "Hello!";
+                }
+            ?>
         </div>
         <script>
         function logout(){
