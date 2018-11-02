@@ -34,8 +34,21 @@ button{
     color: darkgrey;
     background: #539;
     text-align: center;
-    border-bottom: none;
+    position: fixed;
+    width:100%;
+    /* border-bottom: none; */
     padding: 20px;
+    z-index: 10;
+}
+.main-footer{
+    color: darkgrey;
+    background: #539;
+    text-align: center;
+    position: fixed;
+
+    /* border-bottom: none; */
+    padding: 20px;
+    z-index: 10;
 }
 form{
     width: 380px;
@@ -80,6 +93,8 @@ form{
 }
 .frame{
     width: 400px;
+    position: relative;
+    top:150px;
     background-color: lightgrey;
     border: 10px solid darkgrey;
     margin: 0 auto;

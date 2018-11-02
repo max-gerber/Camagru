@@ -195,7 +195,6 @@ if (isset($_POST['new'])){
         else{
             array_push($errors, "There was an error, please try again");
         }
-
     }
 }
 
@@ -204,11 +203,10 @@ if (isset($_POST['new'])){
 if(isset($_POST['submit_picture'])){
     $picture = $_POST['picture'];
     $username = $_SESSION['username'];
-    echo ($username."   ".$picture);
     $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
     $stmt = $connection->prepare("INSERT INTO camagru_db.photos (photo, user) VALUES (:p1ctur3, :us3r)");
     $stmt->execute(["p1ctur3"=>$picture ,"us3r"=>$username]);
-    // $stmt = $connection->prepare("INSERT INTO camagru_db.users (username, email, `password`, token) VALUES (?, ?, ?, ?)");
-    // $stmt->execute([$username,$email, $password, $token]);
+    $query = $connection->prepare("UPDATE camagru_db.users SET photos = (photos + 1) WHERE username = :us3r");
+    $query->execute(["us3r"=>$username]);
 }
 ?>

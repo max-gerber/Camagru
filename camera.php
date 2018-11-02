@@ -1,17 +1,17 @@
 <!doctype html>
 <html>
+        <?php include('server.php');?>
     <head>
         <title>Photobooth</title>
         <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <?php include('server.php');?>
         <div class="main-header">
             <h2>CAMERA</h2>
-            <button onclick="logout();" style="float: right;">logout</button><br>
-            <button onclick="home();" style="float: right;">home</button><br>
+            <button onclick="logout();" style="float: right; margin-right: 125px;">logout</button><br>
+            <button onclick="home();" style="float: right; margin-right: 125px;">home</button><br>
             <?php echo "You look amazing!";?>
         </div>
+    </head>
+    <body>
         <div class="frame">
             <img id="live" class="overlay" width="400" height="300">
             <video id ="video" width="400" height="300"></video><br>
@@ -33,10 +33,13 @@
             </a>
             <input id="image-file" type="file" />
             <canvas id ="canvas" width="400" height="300"></canvas>
-            <img id="photo" src="images/your_photo_here.png" width="400" height="300" alt="Image" download="file.png">
-            <a href="#" id="download" class="frame-capture-button" download="my-file-name.png">Save</a>
+            <img id="photo" src="images/your_photo_here.png" width="400" height="300" alt="Image">
+            <a href="#" id="download" class="frame-capture-button">Save</a>
         </div>
         <div id="status"></div>
+        <div id="gallery">
+            
+        </div>
         <script src="photo.js"></script>
         <script>
         function logout(){
@@ -47,4 +50,8 @@
         }
         </script>
     </body>
+    <footer>
+        <div class="main-header" style="position :fixed; bottom:0; left:0">
+        </div>
+    </footer>
 </html>

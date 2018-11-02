@@ -36,9 +36,6 @@
             alert("Please select a filter");
         }
     });
-
-
-
     download.addEventListener('click', function(){
         var hr = new XMLHttpRequest();
         var url = "server.php";
@@ -55,9 +52,6 @@
         }
         hr.send(vars);
     });
-
-
-
     sticker1.addEventListener('click', function(){
         sticker = new Image();
         sticker.src = 'images/sticker1.png';

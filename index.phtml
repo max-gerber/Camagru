@@ -1,14 +1,12 @@
 <!doctype html>
 <html>
+    <?php include('server.php');?>
     <head>
         <title>CAMAGRU</title>
-        <link rel="stylesheet" href="style.css">        
-    </head>
-    <body>
-        <?php include('server.php');?>
+        <link rel="stylesheet" href="style.css">
         <div class="main-header">
             <h2>HOME PAGE</h2>
-            <button onclick="logout();" style="float: right;">
+            <button onclick="logout();" style="float: right; margin-right: 125px;">
             <?php
                 if (isset($_SESSION['username'])){
                     echo "logout";
@@ -18,7 +16,7 @@
                 }
                 ?>
                 </button><br>
-            <button onclick="camera();" style="float: right;">camera</button><br>
+            <button onclick="camera();" style="float: right; margin-right: 125px;">camera</button><br>
             <?php
                 if (isset($_SESSION['username'])){
                     echo "Hello ".$_SESSION['username']."!";
@@ -35,6 +33,34 @@
         function camera(){
             location.replace("camera.php");
         }
-        </script>
+        </script>    
+    </head>
+    <body>
+    <?php
+        include('server.php');
+        // $servername = "localhost";
+        // $ad_username = "root";
+        // $ad_password = "12345Max";
+        // $dbname = "camagru_db";
+        $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+        $stmt = $connection->prepare("SELECT `photo`, `user` FROM `camagru_db`.`photos`");
+        $stmt->execute();
+        echo '<div style="top:150px; position: relative; align:center;">';
+        while ($row = $stmt->fetch()) {
+            echo('<div class="gallery">');
+            // echo('<a target="_blank">');
+            echo("<img src =".$row[photo]."/>");
+            // echo('</a>');
+            echo('<div class="desc">'.$row[user].'</div>');
+            echo('</div>');
+        }
+        echo '<div> </br></br> </div>';
+        echo "</div>";
+
+?>
     </body>
+    <footer>
+        <div class="main-header" style="position :fixed; bottom:0; left:0">
+        </div>
+    </footer>
 </html>

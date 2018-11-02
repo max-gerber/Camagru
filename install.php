@@ -20,6 +20,7 @@
         username VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         verified TINYINT(1) NOT NULL DEFAULT '0',
+        photos INT(11) NOT NULL DEFAULT '0',
         token VARCHAR(255) DEFAULT NULL,
         password VARCHAR(255))";
         $connection->exec($sql);
@@ -31,15 +32,15 @@
     try{
         $connection = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "CREATE TABLE photos(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
-        photo LONGTEXT(4294967295) NOT NULL,
-        user VARCHAR(255) NOT NULL,
-        creation TIMESTAMP)";
+        $sql = "CREATE TABLE `camagru_db`.`photos`(`id` INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+        `photo` LONGTEXT NOT NULL,
+        `user` VARCHAR(255) NOT NULL,
+        `creation` TIMESTAMP NOT NULL)";
         $connection->exec($sql);
         echo ("Table 2 created successfully.");
         }
     catch (PDOException $e){
-        echo ($sql."<br>".$e->getMessage().". ");
+        echo ($sql."<br>".$e->getMessage().".");
     }
     header('location: register.php');
 ?>
