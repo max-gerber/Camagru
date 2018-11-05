@@ -9,14 +9,24 @@
             <button onclick="logout();" style="float: right; margin-right: 125px;">
             <?php
                 if (isset($_SESSION['username'])){
-                    echo "logout";
+                    echo "Logout";
                 }
                 else{
-                    echo "login";
+                    echo "Login";
                 }
-                ?>
-                </button><br>
-            <button onclick="camera();" style="float: right; margin-right: 125px;">camera</button><br>
+            ?>
+            </button><br>
+            <button onclick="account();" style="float: right; margin-right: 125px;">
+            <?php
+                if (isset($_SESSION['username'])){
+                    echo "Account";
+                }
+                else{
+                    echo "Join";
+                }
+            ?>
+            </button><br>
+            <button onclick="camera();" style="float: right; margin-right: 125px;">Camera</button><br>
             <?php
                 if (isset($_SESSION['username'])){
                     echo "Hello ".$_SESSION['username']."!";
@@ -33,31 +43,29 @@
         function camera(){
             location.replace("camera.php");
         }
+        function account(){
+            location.replace("account.php");
+        }
         </script>    
     </head>
     <body>
     <?php
         include('server.php');
-        // $servername = "localhost";
-        // $ad_username = "root";
-        // $ad_password = "12345Max";
-        // $dbname = "camagru_db";
         $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
         $stmt = $connection->prepare("SELECT `photo`, `user` FROM `camagru_db`.`photos`");
         $stmt->execute();
-        echo '<div style="top:150px; position: relative; align:center;">';
+        echo '<div style="top:175px; position: relative; align:center;">';
         while ($row = $stmt->fetch()) {
             echo('<div class="gallery">');
             // echo('<a target="_blank">');
-            echo("<img src =".$row[photo]."/>");
+            echo("<img src =".$row[photo]." class='center'/>");
             // echo('</a>');
-            echo('<div class="desc">'.$row[user].'</div>');
+            echo('<div class="center">'.$row[user].'</div>');
             echo('</div>');
         }
         echo '<div> </br></br> </div>';
         echo "</div>";
-
-?>
+    ?>
     </body>
     <footer>
         <div class="main-header" style="position :fixed; bottom:0; left:0">

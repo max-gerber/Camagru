@@ -37,16 +37,30 @@
             <a href="#" id="download" class="frame-capture-button">Save</a>
         </div>
         <div id="status"></div>
-        <div id="gallery">
-            
-        </div>
+        <?php
+            include('server.php');
+            $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+            $stmt = $connection->prepare("SELECT `photo`, `user` FROM `camagru_db`.`photos` WHERE `user`= :us3r");
+            $stmt->execute(["us3r"=>$_SESSION['username']]);
+            echo '<div style="top:175px; position: relative; align:center;">';
+            while ($row = $stmt->fetch()) {
+                echo('<div class="gallery">');
+                // echo('<a target="_blank">');
+                echo("<img src =".$row[photo]." class='center'/>");
+                // echo('</a>');
+                echo('<div class="center">'.$row[user].'</div>');
+                echo('</div>');
+            }
+            echo '<div> </br></br> </div>';
+            echo "</div>";
+        ?>
         <script src="photo.js"></script>
         <script>
         function logout(){
             location.replace("logout.php?logout=1");
         }
         function home(){
-            location.replace("index.phtml");
+            location.replace("index.php");
         }
         </script>
     </body>

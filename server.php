@@ -131,7 +131,7 @@ if (isset($_POST['login'])){
             if (sizeof($results) == 1){
                 $_SESSION['username'] = $username;
                 $_SESSION['success'] = "You are logged in";
-                header('location: index.phtml');
+                header('location: index.php');
             }
             else{
                 array_push($errors, "This account is unverified, check your emails");
@@ -139,6 +139,66 @@ if (isset($_POST['login'])){
         }
         else{
             array_push($errors, "This username/password is invalid");
+        }
+    }
+}
+
+// Modifying account settings
+
+if (isset($_POST['account'])){
+    $username = ($_POST['username']);
+    $email = ($_POST['email']);
+    $password = ($_POST['password']);
+    $confirm = ($_POST['confirm']);
+    if (empty($username) && empty($email) && empty($password)){
+        array_push($errors, "At least one value must be modified");
+    }
+    if (!empty($username)){
+        if (strlen($username) > 25){
+            array_push($errors, "Usernames may not exeed 25 characters");
+        }
+    }
+    if (!empty($password)){
+        if (strlen($password) < 6){
+            array_push($errors, "Passwords must by of 6 characters or more");
+        }
+        if (!preg_match( '/[A-Z]/', $password)){
+            array_push($errors, "Passwords must contain at least one uppercase letter");
+        }
+        if (!preg_match( '/[a-z]/', $password)){
+            array_push($errors, "Passwords must contain at least one lowercase letter");
+        }
+        if (!preg_match( '/[0-9]/', $password)){
+            array_push($errors, "Passwords must contain at least one number");
+        }
+        if ($password != $confirm){
+            array_push($errors, "The two passwords do not match");
+        }
+    }
+    if(count($errors) == 0){
+        $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+        $stmt = $connection->prepare("SELECT * FROM camagru_db.users WHERE username = ?");
+        $stmt->execute([$_SESSION['username']]);
+        $results = $stmt->fetchAll();
+        if (sizeof($results) == 1){
+            if (!empty($username)){
+                $query = $connection->prepare("UPDATE camagru_db.users SET username= :us3r WHERE username = :s3ssion");
+                $query->execute(["us3r"=>$username, "s3ssion"=>$_SESSION['username']]);
+                $_SESSION['username']=$username;
+            }
+            if (!empty($password)){
+                $password = hash('whirlpool', $password);
+                $query = $connection->prepare("UPDATE camagru_db.users SET `password`= :passw0rd WHERE username = :s3ssion");
+                $query->execute(["passw0rd"=>$password, "s3ssion"=>$_SESSION['username']]);
+            }
+            if (!empty($email)){
+                $query = $connection->prepare("UPDATE camagru_db.users SET email= :ema1l WHERE username = :s3ssion");
+                $query->execute(["ema1l"=>$email, "s3ssion"=>$_SESSION['username']]);
+            }
+            header('location: index.php');
+        }
+        else{
+            array_push($errors, "There was an error, please try again");
         }
     }
 }

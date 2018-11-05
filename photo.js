@@ -4,6 +4,9 @@
         canvas = document.getElementById('canvas'),
         context = canvas.getContext('2d'),
         photo = document.getElementById('photo'),
+        img = new Image(),
+        upload = document.getElementById('image-file'),
+        check = 0;
         download = document.getElementById('download'),
         sticker1 = document.getElementById('sticker1'),
         sticker2 = document.getElementById('sticker2'),
@@ -28,29 +31,38 @@
     });
     document.getElementById('capture').addEventListener('click', function(){
         if (typeof sticker !== 'undefined'){
-                context.drawImage(video, 0, 0, 400, 300),
-                context.drawImage(sticker, 0, 0, 400, 300);
-                photo.setAttribute('src', canvas.toDataURL('image/png'));
+            img.srcObject = upload.files[0];
+            context.drawImage(video, 0, 0, 400, 300),
+            context.drawImage(img, 0, 0, 400, 300),
+            context.drawImage(sticker, 0, 0, 400, 300);
+            photo.setAttribute('src', canvas.toDataURL('image/png'));
+            check = 1;
         }
         else{
             alert("Please select a filter");
         }
     });
     download.addEventListener('click', function(){
-        var hr = new XMLHttpRequest();
-        var url = "server.php";
-        var username = '<?php echo ($_SESSION["username"]); ?>';
-        var picture = (encodeURIComponent(JSON.stringify(photo.src)));
-        var vars = "username="+username+"&picture="+picture+"&submit_picture=true";
-        hr.open("POST", url, true);
-        hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        hr.onreadystatechange = function(){
-            if (hr.readyState == 4 && hr.status == 200){
-                var return_data = hr.responseText;
-                document.getElementById("status").innerHTML = return_data;
+        if (check == 1){
+            var hr = new XMLHttpRequest();
+            var url = "server.php";
+            var username = '<?php echo ($_SESSION["username"]); ?>';
+            var picture = (encodeURIComponent(JSON.stringify(photo.src)));
+            var vars = "username="+username+"&picture="+picture+"&submit_picture=true";
+            hr.open("POST", url, true);
+            hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            hr.onreadystatechange = function(){
+                if (hr.readyState == 4 && hr.status == 200){
+                    var return_data = hr.responseText;
+                    document.getElementById("status").innerHTML = return_data;
+                }
             }
+            hr.send(vars);
+            location.replace("index.php");
         }
-        hr.send(vars);
+        else{
+            alert("Please take a photo");
+        }
     });
     sticker1.addEventListener('click', function(){
         sticker = new Image();
