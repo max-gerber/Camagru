@@ -4,8 +4,7 @@
         canvas = document.getElementById('canvas'),
         context = canvas.getContext('2d'),
         photo = document.getElementById('photo'),
-        img = new Image(),
-        upload = document.getElementById('image-file'),
+        upload = document.getElementById('inp'),
         check = 0;
         download = document.getElementById('download'),
         sticker1 = document.getElementById('sticker1'),
@@ -31,9 +30,7 @@
     });
     document.getElementById('capture').addEventListener('click', function(){
         if (typeof sticker !== 'undefined'){
-            img.srcObject = upload.files[0];
             context.drawImage(video, 0, 0, 400, 300),
-            context.drawImage(img, 0, 0, 400, 300),
             context.drawImage(sticker, 0, 0, 400, 300);
             photo.setAttribute('src', canvas.toDataURL('image/png'));
             check = 1;
@@ -41,6 +38,27 @@
         else{
             alert("Please select a filter");
         }
+    });
+    upload.addEventListener('change', function(e) {
+        var img = new Image();
+        img.src = URL.createObjectURL(upload.files[0]);
+        // context.drawImage(img, 0, 0, 400, 300),
+        // photo.setAttribute('src', canvas.toDataURL('image/png'));
+        var hr = new XMLHttpRequest();
+        var url = "server.php";
+        var username = '<?php echo ($_SESSION["username"]); ?>';
+        var picture = (encodeURIComponent(JSON.stringify(img.src)));
+        var vars = "username="+username+"&picture="+picture+"&submit_picture=true";
+        hr.open("POST", url, true);
+        hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        hr.onreadystatechange = function(){
+            if (hr.readyState == 4 && hr.status == 200){
+                var return_data = hr.responseText;
+                document.getElementById("status").innerHTML = return_data;
+            }
+        }
+        hr.send(vars);
+        location.replace("index.php");
     });
     download.addEventListener('click', function(){
         if (check == 1){

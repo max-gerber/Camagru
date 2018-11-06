@@ -31,10 +31,11 @@
                     }
                 ?>
             </a>
-            <input id="image-file" type="file" />
             <canvas id ="canvas" width="400" height="300"></canvas>
             <img id="photo" src="images/your_photo_here.png" width="400" height="300" alt="Image">
             <a href="#" id="download" class="frame-capture-button">Save</a>
+            upload a photo if you don't have a webcam.
+            <input type="file" id="inp"/>
         </div>
         <div id="status"></div>
         <?php
