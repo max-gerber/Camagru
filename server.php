@@ -1,10 +1,11 @@
 <?php
-session_start();
+if (!isset($_SESSION)){
+    session_start();
+}
 $servername = "localhost";
 $ad_username = "root";
 $ad_password = "12345Max";
-$tablename = "camagru_db.users";
-$tablename = "users";
+$dbname = "camagru_db";
 $username = "";
 $email = "";
 $errors = array();
@@ -19,13 +20,13 @@ try{
         $email = $_POST['email'];
         $password = $_POST['password'];
         $confirm = $_POST['confirm'];
-        if(empty($username)){
+        if (empty($username)){
             array_push($errors, "Username is required");
         }
-        if(empty($email)){
+        if (empty($email)){
             array_push($errors, "Email is required");
         }
-        if(empty($password)){
+        if (empty($password)){
             array_push($errors, "Password is required");
         }
         if (strlen($username) > 25){
@@ -43,7 +44,7 @@ try{
         if (!preg_match( '/[0-9]/', $password)){
             array_push($errors, "Passwords must contain at least one number");
         }
-        if($password != $confirm){
+        if ($password != $confirm){
             array_push($errors, "The two passwords do not match");
         }
         $stmt = $connection->prepare("SELECT * FROM camagru_db.users WHERE username = :us3r OR email = :ema1l");
@@ -52,9 +53,8 @@ try{
         if (sizeof($results) >= 1){
             array_push($errors, "Username/Email already in use");
         }
-        if(count($errors) == 0){
+        if (count($errors) == 0){
             $password = hash('whirlpool', $password);
-            console.log($password) ;
             $token = hash('whirlpool', "crap".$password);
             $stmt = $connection->prepare("INSERT INTO camagru_db.users (username, email, `password`, token) VALUES (?, ?, ?, ?)");
             $stmt->execute([$username,$email, $password, $token]);
@@ -65,7 +65,7 @@ try{
         }
     }
 }
-catch(PDOException $e){
+catch (PDOException $e){
     echo $sql . "<br>" . $e->getMessage();
 }
 
@@ -215,8 +215,6 @@ if (isset($_GET['token'])){
 //  Reseting password
 
 if (isset($_POST['new'])){
-    $username = $_POST['username'];
-    $email = $_POST['email'];
     $password = $_POST['password'];
     $confirm = $_POST['confirm'];
     $token = $_SESSION['token'];
@@ -260,7 +258,7 @@ if (isset($_POST['new'])){
 
 //  add photo to database
 
-if(isset($_POST['submit_picture'])){
+if (isset($_POST['submit_picture'])){
     $picture = $_POST['picture'];
     $username = $_SESSION['username'];
     $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);

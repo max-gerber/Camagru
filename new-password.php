@@ -11,7 +11,12 @@
     <form method="post" action="new-password.php">
         <?php 
             include('errors.php');
-            $_SESSION['token'] = $_GET['token'];
+            if (isset($_GET['token'])){
+                $_SESSION['token'] = $_GET['token'];
+            }
+            else{
+                header('location: reset-password.php');
+            }
         ?>
         <div class="input-group">
             <label>New Password</label>
