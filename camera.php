@@ -35,7 +35,11 @@
             <img id="photo" src="images/your_photo_here.png" width="400" height="300" alt="Image">
             <a href="#" id="download" class="frame-capture-button">Save</a>
             upload a photo if you don't have a webcam.
-            <input type="file" id="inp"/>
+            <form action="server.php" method="post" id="form" enctype="multipart/form-data">
+                <label for="picture">Picture:</label>
+                <input type="file" name="picture"><br>
+                <input type="submit" name="submit-upload" value="Upload">
+            </form>
         </div>
         <div id="status"></div>
         <?php

@@ -8,7 +8,7 @@
     <div class="header">
         <h2>REGISTER</h2>
     </div>
-    <form method="post" action="register.php">
+    <form method="post" id="form" action="register.php">
         <?php include('errors.php');?>
         <div class="input-group">
             <label>Username</label>

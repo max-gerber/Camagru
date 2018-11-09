@@ -50,7 +50,7 @@ button{
     padding: 20px;
     z-index: 10;
 }
-form{
+#form{
     width: 380px;
     margin: 0px auto;
     padding: 20px;

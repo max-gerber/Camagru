@@ -8,7 +8,7 @@
     <div class="header">
         <h2>CREATE NEW PASSWORD</h2>
     </div>
-    <form method="post" action="new-password.php">
+    <form method="post" id="form" action="new-password.php">
         <?php 
             include('errors.php');
             if (isset($_GET['token'])){

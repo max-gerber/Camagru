@@ -40,32 +40,36 @@
         function logout(){
             location.replace("logout.php?logout=1");
         }
-        function camera(){
-            location.replace("camera.php");
-        }
         function account(){
             location.replace("account.php");
+        }
+        function camera(){
+            location.replace("camera.php");
         }
         </script>    
     </head>
     <body>
-    <?php
-        include('server.php');
-        $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
-        $stmt = $connection->prepare("SELECT `photo`, `user` FROM `camagru_db`.`photos`");
-        $stmt->execute();
-        echo '<div style="top:175px; position: relative; align:center;">';
-        while ($row = $stmt->fetch()) {
-            echo('<div class="gallery">');
-            // echo('<a target="_blank">');
-            echo("<img src =".$row[photo]." class='center'/>");
-            // echo('</a>');
-            echo('<div class="center">'.$row[user].'</div>');
+        <?php
+            include('server.php');
+            $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+            $stmt = $connection->prepare("SELECT `id`, `photo`, `user` FROM `camagru_db`.`photos` ORDER BY creation DESC");
+            $stmt->execute();
+            echo('<div style="top:175px; position: relative; align:center;">');
+                while ($row = $stmt->fetch()) {
+                    echo('<div class="gallery">');
+                        echo('<a href="http://127.0.0.1:8080/Camagru/social.php?id='.$row[id].'">');
+                            echo('<img src ='.$row[photo].' class="center"/>');
+                        echo('</a>');
+                        echo('<div class="center">');
+                            echo($row[user]);
+                        echo('</div>');
+                    echo('</div>');
+                }
+                echo('<div>');
+                    echo('</br></br>');
+                echo('</div>');
             echo('</div>');
-        }
-        echo '<div> </br></br> </div>';
-        echo "</div>";
-    ?>
+        ?>
     </body>
     <footer>
         <div class="main-header" style="position :fixed; bottom:0; left:0">

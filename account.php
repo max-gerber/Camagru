@@ -8,7 +8,7 @@
     <div class="header">
         <h2>ACCOUNT MANAGEMENT</h2>
     </div>
-    <form method="post" action="account.php">
+    <form method="post" id ="form" action="account.php">
         <?php include('errors.php'); echo ("modify one or multiple user settings");?>
         <div class="input-group">
             <label>New username</label>
@@ -25,6 +25,10 @@
         <div class="input-group">
             <label>Confirm New Password</label>
             <input type="password" name="confirm">
+        </div>
+        <div class="input-group">
+            <div>Email Notification</div>
+            <input type="checkbox" name="notifications">
         </div>
         <div class="input-group">
             <button type="submit" name="account" class="button">Change</button>

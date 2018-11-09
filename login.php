@@ -8,7 +8,7 @@
     <div class="header">
         <h2>LOG IN</h2>
     </div>
-    <form method="post" action="login.php">
+    <form method="post" id="form" action="login.php">
         <?php include('errors.php');?>
         <div class="input-group">
             <label>Username</label>

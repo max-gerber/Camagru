@@ -8,7 +8,7 @@
     <div class="header">
         <h2>RESET PASSWORD</h2>
     </div>
-    <form method="post" action="reset-password.php">
+    <form method="post" id="form" action="reset-password.php">
         <?php include('errors.php');?>
         <div class="input-group">
             <label>Username</label>
