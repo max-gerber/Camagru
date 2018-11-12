@@ -44,7 +44,7 @@
                 $stmt = $connection->prepare("SELECT `photo` FROM `camagru_db`.`photos` WHERE id = :1d ORDER BY creation DESC");
                 $stmt->execute(["1d"=>$_GET['id']]);
                 $image = $stmt->fetch();
-                echo('<img src ='.$image[photo].' class="center"/>');
+                echo('<img src ='.$image['photo'].' class="center"/>');
             ?>
             <form method="post" action="server.php">
                 <?php 
@@ -70,12 +70,12 @@
                 $stmt = $connection->prepare("SELECT `likes` FROM `camagru_db`.`photos` WHERE `id` = :1d");
                 $stmt->execute(["1d"=>$_SESSION['id']]);
                 $likes = $stmt->fetch();
-                echo("This photo has ".$likes[likes]." like(s).<br>");
+                echo("This photo has ".$likes['likes']." like(s).<br>");
                 $stmt = $connection->prepare("SELECT `username`, `comment` FROM `camagru_db`.`comments` WHERE `photo-id` = :1d");
                 $stmt->execute(["1d"=>$_SESSION['id']]);
                 while ($comments = $stmt->fetch()) {
-                    echo($comments[username].": ");
-                    echo($comments[comment]."<br>");
+                    echo($comments['username'].": ");
+                    echo($comments['comment']."<br>");
                 }
             ?>
             <div>

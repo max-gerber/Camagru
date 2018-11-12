@@ -153,7 +153,9 @@ if (isset($_POST['account'])){
     $email = ($_POST['email']);
     $password = ($_POST['password']);
     $confirm = ($_POST['confirm']);
-    $notifications = ($_POST['notifications']);
+    if (isset($_POST['notifications'])){
+        $notifications = ($_POST['notifications']);
+    }
     if (empty($username) && empty($email) && empty($password) && $notifications == 'off'){
         array_push($errors, "At least one value must be modified");
     }
@@ -161,7 +163,7 @@ if (isset($_POST['account'])){
         if (strlen($username) > 25){
             array_push($errors, "Usernames may not exeed 25 characters");
         }
-        if (!preg_match( '/[<>]/', $username)){
+        if (preg_match( '/[<>]/', $username)){
             array_push($errors, "Usernames may not contain '<' or '>' characters");
         }
     }
@@ -297,7 +299,9 @@ if (isset($_POST['submit-upload'])){
 //  Likes and comments
 
 if (isset($_POST['interaction'])){
-    $like = $_POST['like'];
+    if(isset($_POST['like'])){
+        $like = $_POST['like'];
+    }
     $comment = $_POST['comment'];
     $username = $_SESSION['username'];
     $photo = $_SESSION['id'];
@@ -312,16 +316,31 @@ if (isset($_POST['interaction'])){
         $statement = $connection->prepare("SELECT `user` FROM camagru_db.photos WHERE id = :1d");
         $statement->execute(["1d"=>$photo]);
         $results = $statement->fetch();
-        $reciever = $results[user];
+        $reciever = $results['user'];
         $request = $connection->prepare("SELECT `notifications`, `email` FROM camagru_db.users WHERE username = :us3r");
         $request->execute(["us3r"=>$reciever]);
         $results = $request->fetch();
-        if ($results[notifications] == '1'){
+        if ($results['notifications'] == '1'){
             $message = 'Hi '.$reciever.', '.$username.' has commented "'.$comment.'" on one of your photos.';
             $message = wordwrap($message, 70);
-            mail($results[email], 'New comment', $message);
+            mail($results['email'], 'New comment', $message);
         }
     }
     header('Location: index.php');
+}
+
+//  Deleting user photo
+
+if (isset($_GET['delete_id'])){
+    $id = $_GET['delete_id'];
+    $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+    $stmt = $connection->prepare("SELECT `user` FROM `camagru_db`.`photos` WHERE id = :1d");
+    $stmt->execute(["1d" => $id]);
+    $user = $stmt->fetch();
+    if ($user['user'] == $_SESSION['username']){
+        $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+        $query = $connection->prepare("DELETE FROM `camagru_db`.`photos` WHERE id=:1d");
+        $query->execute(["1d" => $id]);
+    }
 }
 ?>

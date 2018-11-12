@@ -35,8 +35,7 @@
             <img id="photo" src="images/your_photo_here.png" width="400" height="300" alt="Image">
             <a href="#" id="download" class="frame-capture-button">Save</a>
             upload a photo if you don't have a webcam.
-            <form action="server.php" method="post" id="form" enctype="multipart/form-data">
-                <label for="picture">Picture:</label>
+            <form action="server.php" method="post" id="upload-form" enctype="multipart/form-data">
                 <input type="file" name="picture"><br>
                 <input type="submit" name="submit-upload" value="Upload">
             </form>
@@ -45,19 +44,20 @@
         <?php
             include('server.php');
             $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
-            $stmt = $connection->prepare("SELECT `photo`, `user` FROM `camagru_db`.`photos` WHERE `user`= :us3r");
+            $stmt = $connection->prepare("SELECT `id`, `photo`, `user` FROM `camagru_db`.`photos` WHERE `user`= :us3r");
             $stmt->execute(["us3r"=>$_SESSION['username']]);
-            echo '<div style="top:175px; position: relative; align:center;">';
+            echo ('<div style="top:175px; position: relative; align:center;">');
+            echo ("<div>Click on a photo to delete it");
             while ($row = $stmt->fetch()) {
-                echo('<div class="gallery">');
-                // echo('<a target="_blank">');
-                echo("<img src =".$row[photo]." class='center'/>");
-                // echo('</a>');
-                echo('<div class="center">'.$row[user].'</div>');
-                echo('</div>');
+                echo ('<div class="gallery">');
+                echo ('<a href="http://127.0.0.1:8080/Camagru/delete.php?delete_id='.$row['id'].'">');
+                    echo ("<img src =".$row['photo']." class='center'/>");
+                echo ('</a>');
+                echo ('</br>');
+                echo ('</div>');
             }
-            echo '<div> </br></br> </div>';
-            echo "</div>";
+            echo ('<div> </br></br> </div>');
+            echo ('</div>');
         ?>
         <script src="photo.js"></script>
         <script>

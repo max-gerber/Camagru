@@ -14,9 +14,9 @@
             if (isset($_GET['token'])){
                 $_SESSION['token'] = $_GET['token'];
             }
-            else{
-                header('location: reset-password.php');
-            }
+            // else{
+            //     header('location: reset-password.php');
+            // }
         ?>
         <div class="input-group">
             <label>New Password</label>

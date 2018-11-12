@@ -52,18 +52,33 @@
         <?php
             include('server.php');
             $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
-            $stmt = $connection->prepare("SELECT `id`, `photo`, `user` FROM `camagru_db`.`photos` ORDER BY creation DESC");
+            $stmt = $connection->prepare("SELECT `id`, `photo`, `user` FROM `camagru_db`.`photos` ORDER BY `id` DESC");
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            $elements = sizeof($results);
+            $pages = ceil($elements / 5);
+            if (!isset($_GET['page'])){
+                $current = 1;
+            }
+            else {
+                $current = $_GET['page'];
+            }
+            $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+            $stmt = $connection->prepare("SELECT `id`, `photo`, `user` FROM `camagru_db`.`photos` ORDER BY creation DESC LIMIT ".(($current - 1) * 5).", 5");
             $stmt->execute();
             echo('<div style="top:175px; position: relative; align:center;">');
                 while ($row = $stmt->fetch()) {
                     echo('<div class="gallery">');
-                        echo('<a href="http://127.0.0.1:8080/Camagru/social.php?id='.$row[id].'">');
-                            echo('<img src ='.$row[photo].' class="center"/>');
+                        echo('<a href="http://127.0.0.1:8080/Camagru/social.php?id='.$row['id'].'">');
+                            echo('<img src ='.$row['photo'].' class="center"/>');
                         echo('</a>');
                         echo('<div class="center">');
-                            echo($row[user]);
+                            echo($row['user']);
                         echo('</div>');
                     echo('</div>');
+                }
+                for ($current = 1; $current <= $pages; $current++){
+                    echo('<a href="index.php?page='.$current.'">'.$current.'</a>');
                 }
                 echo('<div>');
                     echo('</br></br>');
