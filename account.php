@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<title>User Registration Page</title>
+<title>Account Management Page</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
@@ -9,7 +9,7 @@
         <h2>ACCOUNT MANAGEMENT</h2>
     </div>
     <form method="post" id ="form" action="account.php">
-        <?php include('errors.php'); echo ("modify one or multiple user settings");?>
+        <?php include('errors.php');?>
         <div class="input-group">
             <label>New username</label>
             <input type="text" name="username">

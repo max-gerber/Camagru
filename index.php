@@ -64,7 +64,7 @@
                 $current = $_GET['page'];
             }
             $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
-            $stmt = $connection->prepare("SELECT `id`, `photo`, `user` FROM `camagru_db`.`photos` ORDER BY creation DESC LIMIT ".(($current - 1) * 5).", 5");
+            $stmt = $connection->prepare("SELECT `id`, `photo`, `user` FROM `camagru_db`.`photos` ORDER BY `id` DESC LIMIT ".(($current - 1) * 5).", 5");
             $stmt->execute();
             echo('<div style="top:175px; position: relative; align:center;">');
                 while ($row = $stmt->fetch()) {

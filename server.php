@@ -153,10 +153,7 @@ if (isset($_POST['account'])){
     $email = ($_POST['email']);
     $password = ($_POST['password']);
     $confirm = ($_POST['confirm']);
-    if (isset($_POST['notifications'])){
-        $notifications = ($_POST['notifications']);
-    }
-    if (empty($username) && empty($email) && empty($password) && $notifications == 'off'){
+    if (empty($username) && empty($email) && empty($password) && !isset($_POST['notifications'])){
         array_push($errors, "At least one value must be modified");
     }
     if (!empty($username)){
@@ -204,7 +201,7 @@ if (isset($_POST['account'])){
                 $query = $connection->prepare("UPDATE camagru_db.users SET email= :ema1l WHERE username = :s3ssion");
                 $query->execute(["ema1l"=>$email, "s3ssion"=>$_SESSION['username']]);
             }
-            if ($notifications == 'on'){
+            if (isset($_POST['notifications'])){
                 $query = $connection->prepare("UPDATE camagru_db.users SET notifications=1 WHERE username = :s3ssion");
                 $query->execute(["s3ssion"=>$_SESSION['username']]);
             }
@@ -286,27 +283,29 @@ if (isset($_POST['submit_camera'])){
 
 if (isset($_POST['submit-upload'])){
     $filename = $_FILES["picture"]["tmp_name"];
-    $username = $_SESSION['username'];
-    $base64 = 'data:image/'.$type.';base64,'.base64_encode(file_get_contents($filename));
-    $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
-    $stmt = $connection->prepare("INSERT INTO camagru_db.photos (photo, user) VALUES (:p1ctur3, :us3r)");
-	$stmt->execute(["p1ctur3"=>$base64 ,"us3r"=>$username]);
-    $stmt = $connection->prepare("UPDATE camagru_db.users SET photos = (photos + 1) WHERE username = :us3r");
-    $stmt->execute(["us3r"=>$username]);
-    header('Location: index.php');
+    if (!empty($filename)){
+        $username = $_SESSION['username'];
+        $base64 = 'data:image/png;base64,'.base64_encode(file_get_contents($filename));
+        $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+        $stmt = $connection->prepare("INSERT INTO camagru_db.photos (photo, user) VALUES (:p1ctur3, :us3r)");
+	    $stmt->execute(["p1ctur3"=>$base64 ,"us3r"=>$username]);
+        $stmt = $connection->prepare("UPDATE camagru_db.users SET photos = (photos + 1) WHERE username = :us3r");
+        $stmt->execute(["us3r"=>$username]);
+        header('Location: index.php');
+    }
+    else {
+        header('Location: camera.php');
+    }
 }
 
 //  Likes and comments
 
 if (isset($_POST['interaction'])){
-    if(isset($_POST['like'])){
-        $like = $_POST['like'];
-    }
     $comment = $_POST['comment'];
     $username = $_SESSION['username'];
     $photo = $_SESSION['id'];
     $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
-    if ($like == 'on'){
+    if (isset($_POST['like'])){
         $stmt = $connection->prepare("UPDATE camagru_db.photos SET likes = (likes + 1) WHERE id = :1d");
         $stmt->execute(["1d"=>$photo]);
     }

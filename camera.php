@@ -34,7 +34,7 @@
             <canvas id ="canvas" width="400" height="300"></canvas>
             <img id="photo" src="images/your_photo_here.png" width="400" height="300" alt="Image">
             <a href="#" id="download" class="frame-capture-button">Save</a>
-            upload a photo if you don't have a webcam.
+            <div style="text-align: center">Upload a photo if you don't have a webcam.</div>
             <form action="server.php" method="post" id="upload-form" enctype="multipart/form-data">
                 <input type="file" name="picture"><br>
                 <input type="submit" name="submit-upload" value="Upload">
@@ -45,9 +45,13 @@
             include('server.php');
             $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
             $stmt = $connection->prepare("SELECT `id`, `photo`, `user` FROM `camagru_db`.`photos` WHERE `user`= :us3r");
-            $stmt->execute(["us3r"=>$_SESSION['username']]);
+            if (isset($_SESSION['username'])){
+                $stmt->execute(["us3r"=>$_SESSION['username']]);
+            }
             echo ('<div style="top:175px; position: relative; align:center;">');
-            echo ("<div>Click on a photo to delete it");
+            echo ("<div style='text-align: center; font-size: 23px;'>Click on a photo to delete it");
+            echo ("</br>");
+            echo ("</br>");
             while ($row = $stmt->fetch()) {
                 echo ('<div class="gallery">');
                 echo ('<a href="http://127.0.0.1:8080/Camagru/delete.php?delete_id='.$row['id'].'">');

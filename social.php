@@ -35,13 +35,13 @@
             <?php
                 include('server.php');
                 $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
-                $stmt = $connection->prepare("SELECT `photo` FROM `camagru_db`.`photos` WHERE id = :1d ORDER BY creation DESC");
+                $stmt = $connection->prepare("SELECT `photo` FROM `camagru_db`.`photos` WHERE id = :1d");
                 $stmt->execute(["1d"=>$_GET['id']]);
                 $results = $stmt->fetchAll();
                 if (sizeof($results) != 1){
                     header('location: index.php');
                 }
-                $stmt = $connection->prepare("SELECT `photo` FROM `camagru_db`.`photos` WHERE id = :1d ORDER BY creation DESC");
+                $stmt = $connection->prepare("SELECT `photo` FROM `camagru_db`.`photos` WHERE id = :1d");
                 $stmt->execute(["1d"=>$_GET['id']]);
                 $image = $stmt->fetch();
                 echo('<img src ='.$image['photo'].' class="center"/>');
