@@ -2,7 +2,7 @@
     $servername = "localhost";
     $username = "root";
     $dbname = "camagru_db";
-    $password = "12345Max";
+    $password = "123";
     $connection = new mysqli($servername, $username, $password);
     if ($connection->connect_error){
         die("Connection failed: ".$connection->connect_error.". ");

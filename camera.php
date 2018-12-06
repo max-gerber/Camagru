@@ -54,7 +54,7 @@
             echo ("</br>");
             while ($row = $stmt->fetch()) {
                 echo ('<div class="gallery">');
-                echo ('<a href="http://127.0.0.1:8080/Camagru/delete.php?delete_id='.$row['id'].'">');
+                echo ('<a href="http://127.0.0.1:8000/Camagru/delete.php?delete_id='.$row['id'].'">');
                     echo ("<img src =".$row['photo']." class='center'/>");
                 echo ('</a>');
                 echo ('</br>');

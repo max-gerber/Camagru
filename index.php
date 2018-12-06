@@ -69,7 +69,7 @@
             echo('<div style="top:175px; position: relative; align:center;">');
                 while ($row = $stmt->fetch()) {
                     echo('<div class="gallery">');
-                        echo('<a href="http://127.0.0.1:8080/Camagru/social.php?id='.$row['id'].'">');
+                        echo('<a href="http://127.0.0.1:8000/Camagru/social.php?id='.$row['id'].'">');
                             echo('<img src ='.$row['photo'].' class="center"/>');
                         echo('</a>');
                         echo('<div class="center">');

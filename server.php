@@ -4,7 +4,7 @@ if (!isset($_SESSION)){
 }
 $servername = "localhost";
 $ad_username = "root";
-$ad_password = "12345Max";
+$ad_password = "123";
 $dbname = "camagru_db";
 $username = "";
 $email = "";
@@ -61,7 +61,7 @@ try{
             $token = hash('whirlpool', "crap".$password);
             $stmt = $connection->prepare("INSERT INTO camagru_db.users (username, email, `password`, token) VALUES (?, ?, ?, ?)");
             $stmt->execute([$username,$email, $password, $token]);
-            $message = 'Hello '.$username.', here is the activation link http://127.0.0.1:8080/Camagru/validate.php?token='.$token;
+            $message = 'Hello '.$username.', here is the activation link http://127.0.0.1:8000/Camagru/validate.php?token='.$token;
             $message = wordwrap($message, 70);
             mail($email, 'Camagru Registration', $message);
             header('location: login.php');
@@ -99,7 +99,7 @@ if (isset($_POST['reset'])){
             $token = hash('whirlpool', $username."crap".$email);
             $stmt = $connection->prepare("UPDATE camagru_db.users SET token=:t0ken WHERE username=:us3r");
             $stmt->execute(["t0ken" => $token, "us3r" => $username]);
-            $message = 'follow this link http://127.0.0.1:8080/Camagru/new-password.php?token='.$token.' to reset yourt password';
+            $message = 'follow this link http://127.0.0.1:8000/Camagru/new-password.php?token='.$token.' to reset yourt password';
             $message = wordwrap($message, 70);
             mail($email, 'Password reset', $message);
             header('location: login.php');
@@ -304,28 +304,34 @@ if (isset($_POST['interaction'])){
     $comment = $_POST['comment'];
     $username = $_SESSION['username'];
     $photo = $_SESSION['id'];
-    $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
-    if (isset($_POST['like'])){
-        $stmt = $connection->prepare("UPDATE camagru_db.photos SET likes = (likes + 1) WHERE id = :1d");
-        $stmt->execute(["1d"=>$photo]);
+    if (preg_match( '/[<>]/', $comment)){
+        echo ("<script>alert('the symbols \'<\' and \'>\' are forbidden in comments'");
+        header('Location: social.php?id='.$photo);
     }
-    if (!empty($comment)){
-        $query = $connection->prepare("INSERT INTO camagru_db.comments (`photo-id`, username, comment) VALUES (:1d, :us3r, :c0mment)");
-        $query->execute(["1d"=>$photo ,"us3r"=>$username, "c0mment"=>$comment]);
-        $statement = $connection->prepare("SELECT `user` FROM camagru_db.photos WHERE id = :1d");
-        $statement->execute(["1d"=>$photo]);
-        $results = $statement->fetch();
-        $reciever = $results['user'];
-        $request = $connection->prepare("SELECT `notifications`, `email` FROM camagru_db.users WHERE username = :us3r");
-        $request->execute(["us3r"=>$reciever]);
-        $results = $request->fetch();
-        if ($results['notifications'] == '1'){
-            $message = 'Hi '.$reciever.', '.$username.' has commented "'.$comment.'" on one of your photos.';
-            $message = wordwrap($message, 70);
-            mail($results['email'], 'New comment', $message);
+    else {
+        $connection = new PDO("mysql:host=$servername;dbname=$dbname", $ad_username, $ad_password);
+        if (isset($_POST['like'])){
+            $stmt = $connection->prepare("UPDATE camagru_db.photos SET likes = (likes + 1) WHERE id = :1d");
+            $stmt->execute(["1d"=>$photo]);
         }
+        if (!empty($comment)){
+            $query = $connection->prepare("INSERT INTO camagru_db.comments (`photo-id`, username, comment) VALUES (:1d, :us3r, :c0mment)");
+            $query->execute(["1d"=>$photo ,"us3r"=>$username, "c0mment"=>$comment]);
+            $statement = $connection->prepare("SELECT `user` FROM camagru_db.photos WHERE id = :1d");
+            $statement->execute(["1d"=>$photo]);
+            $results = $statement->fetch();
+            $reciever = $results['user'];
+            $request = $connection->prepare("SELECT `notifications`, `email` FROM camagru_db.users WHERE username = :us3r");
+            $request->execute(["us3r"=>$reciever]);
+            $results = $request->fetch();
+            if ($results['notifications'] == '1'){
+                $message = 'Hi '.$reciever.', '.$username.' has commented "'.$comment.'" on one of your photos.';
+                $message = wordwrap($message, 70);
+                mail($results['email'], 'New comment', $message);
+            }
+        }
+        header('Location: index.php');
     }
-    header('Location: index.php');
 }
 
 //  Deleting user photo
